@@ -8,7 +8,7 @@ var SECONDS_BETWEEN_READINGS = 2;
 function runLoop(secondsToWait) {
     setInterval(function() {
         var result = sensorUtil.read();
-        console.log('Temperature: ' + result.fTemp + '  Humidity: ' + result.humidity);
+        console.log(new Date().toISOString() + ':  Temperature: ' + result.fTemp + '  Humidity: ' + result.humidity);
     }, secondsToWait * 1000);
 }
 
