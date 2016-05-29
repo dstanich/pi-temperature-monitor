@@ -1,26 +1,25 @@
-var sensorLib = require('node-dht-sensor');
+var sensorUtil = require('./sensor-util');
+
+var GPIO_PIN = 4;
+var SECONDS_BETWEEN_READINGS = 2;
 
 
-console.log('TEMP TESTER');
+// Loop for reading the temperature after an interval
+function runLoop(secondsToWait) {
+    setInterval(function() {
+        var result = sensorUtil.read();
+        console.log('Temperature: ' + result.fTemp + '  Humidity: ' + result.humidity);
+    }, secondsToWait * 1000);
+}
 
-var sensor = {
-    initialize: function () {
-        return sensorLib.initialize(22, 4);
-    },
-    read: function () {
-        var readout = sensorLib.read();
-        var cTemp = readout.temperature.toFixed(2);
-        var fTemp = (cTemp * 1.8 + 32).toFixed(2);
-        console.log('Temperature: ' + cTemp + 'C  ' + fTemp + 'F, ' +
-            'Humidity: ' + readout.humidity.toFixed(2) + '%');
-        setTimeout(function () {
-            sensor.read();
-        }, 2000);
-    }
-};
 
-if (sensor.initialize()) {
-    sensor.read();
+console.log('-------------------');
+console.log('TEMP SENSOR MONITOR');
+console.log('-------------------');
+
+if (sensorUtil.initialize(GPIO_PIN)) {
+    runLoop(SECONDS_BETWEEN_READINGS);
 } else {
-    console.warn('Failed to initialize sensor');
+    console.error('Failed to initialize sensor');
+    process.exit(-1);
 }
